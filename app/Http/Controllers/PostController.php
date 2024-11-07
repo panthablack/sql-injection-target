@@ -33,31 +33,36 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        $title = $request['title'];
-        $body = $request['body'];
-        $query = "INSERT INTO sql_injection_test.posts (title,body)
-          VALUES(\"$title\",\"$body\");";
-        $db = new NoNoDB();
-        $res = $db->noNoQuery($query);
-        $info = [
-            '$request' => $request,
-            '$title' => $title,
-            '$body' => $body,
-            '$query' => $query,
-            '$db' => $db,
-            '$res' => $res,
-        ];
-        // dd($info);
-        // WHERE 1 = 1; select * from users; --
+        // NOT SAFE v1 *****************************************************************************
 
-        // SAFE v1 *********************************************************************************
         // $title = $request['title'];
         // $body = $request['body'];
-        // $post = Post::create([
-        //     'title' => $title,
-        //     'body' => $body,
-        // ]);
-        // $post->save();
+        // $query = "INSERT INTO sql_injection_test.posts (title,body)
+        //   VALUES(\"$title\",\"$body\");";
+        // $db = new NoNoDB();
+        // $res = $db->noNoQuery($query);
+        // $info = [
+        //     '$request' => $request,
+        //     '$title' => $title,
+        //     '$body' => $body,
+        //     '$query' => $query,
+        //     '$db' => $db,
+        //     '$res' => $res,
+        // ];
+
+        // *****************************************************************************************
+
+
+        // SAFE v1 *********************************************************************************
+
+        $title = $request['title'];
+        $body = $request['body'];
+        $post = Post::create([
+            'title' => $title,
+            'body' => $body,
+        ]);
+        $post->save();
+
         // *****************************************************************************************
 
 
@@ -75,28 +80,34 @@ class PostController extends Controller
      */
     public function show()
     {
-        $id = $_GET['id'] ?? 1;
-        $query = "SELECT * FROM sql_injection_test.posts WHERE id = $id;";
-        $db = new NoNoDB();
-        $res = $db->noNoQuery($query) ?? [];
-        $post = $res[0] ?? [];
-        $safe = Post::find($id) ?? [];
-        $info = [
-            'query' => $query,
-            'nono' => $post,
-            'safe' => $safe,
-        ];
-        // dd($info);
+        // NOT SAFE v1 *****************************************************************************
+
+        // $id = $_GET['id'] ?? null;
+        // if (!$id) return redirect('/post?id=1');
+        // $query = "SELECT * FROM sql_injection_test.posts WHERE id = $id;";
+        // $db = new NoNoDB();
+        // $res = $db->noNoQuery($query) ?? [];
+        // $post = $res[0] ?? [];
+        // $safe = Post::find($id) ?? [];
+        // $info = [
+        //     'query' => $query,
+        //     'nono' => $post,
+        //     'safe' => $safe,
+        // ];
+        // // dd($info);
+        // return Inertia::render('Post', ['post' => $post]);
+
+        // NOT SAFE v1 *****************************************************************************
+
+        // SAFE // *********************************************************************************
+
+        $id = $_GET['id'] ?? null;
+        if (!$id) return redirect('/post?id=1');
+        $post = Post::find($id) ?? [];
         return Inertia::render('Post', ['post' => $post]);
+
+        // SAFE // *********************************************************************************
     }
-    // SAFE // *************************************************************************************
-    // public function show()
-    // {
-    //     $id = $_GET['id'] ?? 1;
-    //     $post = Post::find($id) ?? [];
-    //     return Inertia::render('Post', ['post' => $post]);
-    // }
-    // SAFE // *************************************************************************************
 
     /**
      * Show the form for editing the specified resource.

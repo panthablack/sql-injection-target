@@ -1,7 +1,19 @@
 <template>
     <div class="postCardContainer p-8">
         <h2 class="mb-4 font-bold text-lg">{{ post.title }}</h2>
-        <p>{{ post.body }}</p>
+        <!-- NOT SAFE -->
+
+        <p v-html="post.body"></p>
+
+        <!-- NOT SAFE -->
+
+        <!-- SAFE -->
+
+        <!-- <p>{{ post.body }}</p> -->
+
+        <!-- SAFE -->
+
+        <!-- This looks like it is safe! <img style="display: none;" src="x" onerror="alert('Gotcha! (Really not safe!)')"></img> -->
     </div>
 </template>
 
